@@ -1,19 +1,33 @@
 'use client'
 import {useEffect, useState} from 'react'
 import {getProjects} from '@/service/projects'
+import {GetUserRecentProjects} from '@/components/Config/Utilities'
+import Link from 'next/link'
 
 const RecentProjects = () => {
   const [recentProjects, setRecentProjects] = useState(undefined)
 
   useEffect(() => {
     async function fetchData() {
-      const projects = getProjects()
-      if (projects) {
-        setRecentProjects(projects)
+      const localUserId = localStorage.getItem('user')
+      if (localUserId) {
+        const parsedUser = await JSON.parse(localUserId)
+
+        if (parsedUser.userId !== null) {
+          const userId = parsedUser.userId
+          const response = await GetUserRecentProjects({id: userId})
+
+          setRecentProjects(response)
+        }
       }
     }
     fetchData()
   }, [])
+
+  const handleClickedProject = (e, projectId) => {
+    const key = e.target.key
+    localStorage.setItem('clickedProjectId', JSON.stringify({key: projectId}))
+  }
 
   const isEmptyRecentProjects = () => {
     if (!recentProjects) {
@@ -36,27 +50,27 @@ const RecentProjects = () => {
           <thead>
             <tr>
               <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Created By</th>
-              <th className="px-4 py-2 text-left"></th>
+              <th className="px-4 py-2 text-left">Description</th>
             </tr>
           </thead>
           <tbody>
             {recentProjects.map((recentProject) => (
-              <tr
+              <Link
                 key={recentProject.id}
-                className="cursor-pointer hover:bg-gray-100"
-                onClick={''}>
-                <td className="border-b border-gray-200 px-4 py-2">
-                  {recentProject.name}
-                </td>
-                <td className="border-b border-gray-200 px-4 py-2">
-                  {recentProject.description}
-                </td>
-                <td className="border-b border-gray-200 px-4 py-2">
-                  {recentProject.createdBy}
-                </td>
-                <td className="border-b border-gray-200 px-4 py-2"></td>
-              </tr>
+                href={'/project'}>
+                <tr
+                  key={recentProject.id}
+                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={(e) => handleClickedProject(e, recentProject.id)}>
+                  <td className="border-b border-gray-200 px-4 py-2">
+                    {recentProject.title}
+                  </td>
+                  <td className="border-b border-gray-200 px-4 py-2">
+                    {recentProject.description}
+                  </td>
+                  <td className="border-b border-gray-200 px-4 py-2"></td>
+                </tr>
+              </Link>
             ))}
           </tbody>
         </table>

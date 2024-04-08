@@ -8,7 +8,7 @@ const CreateTaskBoard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Create task board logic here
+    // Create task project logic here
   }
 
   return (

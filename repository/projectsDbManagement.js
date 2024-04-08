@@ -25,14 +25,12 @@ export const getProjectFromDb = (id) => {
 }
 
 export const getProjectsFromDb = (userId) => {
-  let boards = []
-
   //Add the fetch here
   const store = getFromDb(projectsStoreName)
   if (store) {
-    boards = store
+    return store
   }
-  return boards
+  return 'No projects found'
 }
 
 export const getExternalProjectsFromDb = () => {
@@ -54,12 +52,11 @@ export const updateProjectDataInDb = (boardId, data) => {
   return true
 }
 
-const getFromDb = (storeName) => {
-  const store = localStorage.getItem(storeName)
-  if (store) {
-    return JSON.parse(store)
+const getFromDb = async () => {
+  /*if (response) {
+    return response
   }
-  return store
+  return response*/
 }
 
 const updateDb = (storeName, data) => {

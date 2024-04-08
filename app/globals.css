@@ -6,6 +6,17 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /*--backgroud-color: #fff;
+  --board-color: #f2f2f3;
+  --card-color: #fff;
+  --text-color: #000;
+  --drop-down-color: #fff;
+  --card-box-shadow: #e2dede;
+  --add-btn-hover: #000;
+  --modal-color:#fff;
+  --task-hover:#091e4214;*/
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,6 +31,8 @@ body {
   color-rendering: optimizeQuality;
   color-adjust: exact;
   color-interpolation: sRGB;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {

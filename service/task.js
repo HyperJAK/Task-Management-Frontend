@@ -1,4 +1,4 @@
-import {Task} from '../types/board'
+import {Task} from '../types/project'
 import {getProject, updateProject} from './projects'
 
 export const addTask = (task, boardId) => {
@@ -8,7 +8,7 @@ export const addTask = (task, boardId) => {
     updateProject(boardId, board)
     return true
   }
-  console.log('board not found')
+  console.log('project not found')
   return false
 }
 
@@ -19,6 +19,6 @@ export const deleteTask = (taskId, boardId) => {
     updateProject(boardId, board)
     return true
   }
-  console.log('board not found')
+  console.log('project not found')
   return false
 }

@@ -2,7 +2,7 @@ import { Divider } from '@material-ui/core';
 import { DeleteForeverOutlined } from '@material-ui/icons';
 import React from 'react';
 import { deleteTask } from '../../../service/task';
-import { Task } from '../../../types/board';
+import { Task } from '../../../types/project';
 import { Status } from '../../../types/status';
 import './TaskCard.css';
 
