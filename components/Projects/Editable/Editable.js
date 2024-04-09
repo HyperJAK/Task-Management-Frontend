@@ -22,6 +22,7 @@ const Editable = (props) => {
           <div className={`editable__input ${props.class}`}>
             <textarea
               placeholder={props.placeholder}
+              className={'text-black'}
               autoFocus
               id={'edit-input'}
               onChange={(e) => setText(e.target.value)}

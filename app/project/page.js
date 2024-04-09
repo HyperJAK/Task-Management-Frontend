@@ -10,12 +10,10 @@ import Editable from '../../components/Projects/Editable/Editable'
 import useLocalStorage from 'use-local-storage'
 import '../Bootstrap.css'
 import {forEach} from 'react-bootstrap/ElementChildren'
+import {AddTaskToProject, GetProjectTasks} from '@/components/Config/Utilities'
 const Project = () => {
-  const [data, setData] = useState(
-    localStorage.getItem('kanban-project')
-      ? JSON.parse(localStorage.getItem('kanban-project'))
-      : []
-  )
+  const [data, setData] = useState([])
+  const [loadedData, setLoadedData] = useState(false)
 
   const defaultDark = window.matchMedia('(prefers-colors-scheme: dark)').matches
   const [theme, setTheme] = useLocalStorage(
@@ -64,16 +62,26 @@ const Project = () => {
   //   setData(tempData);
   // };
 
-  const addCard = (title, bid) => {
+  const addTask = async (title, bid) => {
     const index = data.findIndex((item) => item.id === bid)
     const tempData = [...data]
-    tempData[index].card.push({
-      id: uuidv4(),
-      title: title,
-      tags: [],
-      task: [],
-    })
-    setData(tempData)
+
+    //Here we add the logic to add a Task
+    const response = await AddTaskToProject({id: bid, name: title})
+
+    console.log(response.id)
+    console.log(response.name)
+    if (response) {
+      tempData[index].card.push({
+        id: response.id,
+        name: response.name,
+        tags: [],
+        subtasks: [],
+      })
+      setData(tempData)
+    } else {
+      console.log('No response')
+    }
   }
 
   const removeCard = (boardId, cardId) => {
@@ -117,42 +125,74 @@ const Project = () => {
   }
 
   useEffect(() => {
-    function addBoards() {
-      const tempData = [...data]
+    async function fetchData() {
+      const storedProject = localStorage.getItem('clickedProjectId')
 
-      if (data.length === 0) {
-        tempData.push({
-          id: 1,
-          boardName: 'Ongoing',
-          card: [],
-        })
+      if (storedProject) {
+        const parsedProject = JSON.parse(storedProject)
+        if (parsedProject.key !== '' || parsedProject.key !== null) {
+          const projectId = parsedProject.key
 
-        tempData.push({
-          id: 2,
-          boardName: 'Planned',
-          card: [],
-        })
-        tempData.push({
-          id: 3,
-          boardName: 'Completed',
-          card: [],
-        })
-      }
-      for (const element in data) {
-        if (element.status === 'Ongoing') {
-          tempData[0].card.push(element)
-        } else if (element.status === 'Planned') {
-          tempData[1].card.push(element)
-        } else if (element.status === 'Completed') {
-          tempData[2].card.push(element)
+          const response = await GetProjectTasks({id: projectId})
+
+          if (response) {
+            const tempData = [...data]
+
+            //We add the default boards
+            if (data.length === 0) {
+              tempData.push({
+                id: 1,
+                boardName: 'Ongoing',
+                card: [],
+              })
+
+              tempData.push({
+                id: 2,
+                boardName: 'Planned',
+                card: [],
+              })
+              tempData.push({
+                id: 3,
+                boardName: 'Completed',
+                card: [],
+              })
+            }
+
+            //We fill the tasks in the correct board
+
+            response.forEach((task) => {
+              //because API doesnt return the empty subtasks array with tasks, then we initialise it
+              if (!task.subtasks) {
+                task.subtasks = []
+              }
+
+              //same with tags
+              if (!task.tags) {
+                task.tags = []
+              }
+
+              if (task.status === 'Ongoing') {
+                tempData[0].card.push(task)
+              } else if (task.status === 'Planned') {
+                tempData[1].card.push(task)
+              } else if (task.status === 'Completed') {
+                tempData[2].card.push(task)
+              }
+            })
+            //finally we add everything to data object
+            setData(tempData)
+            setLoadedData(true)
+          }
         }
       }
-
-      setData(tempData)
     }
-    addBoards()
+
+    if (data.length === 0) {
+      fetchData()
+    }
+
     localStorage.setItem('kanban-project', JSON.stringify(data))
-  }, [])
+  }, [data])
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -162,19 +202,20 @@ const Project = () => {
         {/*<Navbar switchTheme={switchTheme} />*/}
         <div className="app_outer">
           <div className="app_boards">
-            {data.map((item) => (
-              <Board
-                key={item.id}
-                id={item.id}
-                name={item.boardName}
-                card={item.card}
-                setName={setName}
-                addCard={addCard}
-                removeCard={removeCard}
-                removeBoard={removeBoard}
-                updateCard={updateCard}
-              />
-            ))}
+            {loadedData &&
+              data.map((item) => (
+                <Board
+                  key={item.id}
+                  id={item.id}
+                  name={item.boardName}
+                  card={item.card}
+                  setName={setName}
+                  addCard={addTask}
+                  removeCard={removeCard}
+                  removeBoard={removeBoard}
+                  updateCard={updateCard}
+                />
+              ))}
             {/*The add board component that we use to add columns (should be removed and by default 3 columns are present)*/}
             {/*<Editable
               class={'add__board'}

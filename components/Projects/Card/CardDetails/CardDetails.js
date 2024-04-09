@@ -21,9 +21,9 @@ import Label from '../../Label/Label'
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
 
-  const [values, setValues] = useState({...props.card})
+  const [task, setTask] = useState({...props.card})
   const [input, setInput] = useState(false)
-  const [text, setText] = useState(values.title)
+  const [text, setText] = useState(task.name)
   const [labelShow, setLabelShow] = useState(false)
   const Input = (props) => {
     return (
@@ -39,39 +39,39 @@ const CardDetails = (props) => {
       </div>
     )
   }
-  const addTask = (value) => {
-    values.task.push({
+  const addSubTask = ({name}) => {
+    task.subtasks.push({
       id: uuidv4(),
-      task: value,
+      name: name,
       completed: false,
     })
-    setValues({...values})
+    setTask({...task})
   }
 
-  const removeTask = (id) => {
-    const remaningTask = values.task.filter((item) => item.id !== id)
-    setValues({...values, task: remaningTask})
+  const removeSubTask = (id) => {
+    const remaningSubTasks = task.subtasks.filter((item) => item.id !== id)
+    setTask({...task, subtasks: remaningSubTasks})
   }
 
-  const deleteAllTask = () => {
-    setValues({
-      ...values,
-      task: [],
+  const deleteAllSubTasks = () => {
+    setTask({
+      ...task,
+      subtasks: [],
     })
   }
 
-  const updateTask = (id) => {
-    const taskIndex = values.task.findIndex((item) => item.id === id)
-    values.task[taskIndex].completed = !values.task[taskIndex].completed
-    setValues({...values})
+  const updateSubTask = (id) => {
+    const taskIndex = task.subtasks.findIndex((item) => item.id === id)
+    task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
+    setTask({...task})
   }
-  const updateTitle = (value) => {
-    setValues({...values, title: value})
+  const updateName = (value) => {
+    setTask({...task, name: value})
   }
 
   const calculatePercent = () => {
-    const totalTask = values.task.length
-    const completedTask = values.task.filter(
+    const totalTask = task.subtasks.length
+    const completedTask = task.subtasks.filter(
       (item) => item.completed === true
     ).length
 
@@ -79,27 +79,27 @@ const CardDetails = (props) => {
   }
 
   const removeTag = (id) => {
-    const tempTag = values.tags.filter((item) => item.id !== id)
-    setValues({
-      ...values,
+    const tempTag = task.tags.filter((item) => item.id !== id)
+    setTask({
+      ...task,
       tags: tempTag,
     })
   }
 
   const addTag = (value, color) => {
-    values.tags.push({
+    task.tags.push({
       id: uuidv4(),
-      tagName: value,
+      name: value,
       color: color,
     })
 
-    setValues({...values})
+    setTask({...task})
   }
 
   const handelClickListner = (e) => {
     if (e.code === 'Enter') {
       setInput(false)
-      updateTitle(text === '' ? values.title : text)
+      updateName(text === '' ? task.name : text)
     } else return
   }
 
@@ -110,8 +110,8 @@ const CardDetails = (props) => {
     }
   })
   useEffect(() => {
-    if (props.updateCard) props.updateCard(props.bid, values.id, values)
-  }, [values])
+    if (props.updateCard) props.updateCard(props.bid, task.id, task)
+  }, [task])
 
   return (
     <Modal onClose={props.onClose}>
@@ -124,12 +124,12 @@ const CardDetails = (props) => {
               <div className="d-flex align-items-center gap-2 pt-3">
                 <CreditCard className="icon__md" />
                 {input ? (
-                  <Input title={values.title} />
+                  <Input title={task.name} />
                 ) : (
                   <h5
                     style={{cursor: 'pointer'}}
                     onClick={() => setInput(true)}>
-                    {values.title}
+                    {task.name}
                   </h5>
                 )}
               </div>
@@ -141,14 +141,15 @@ const CardDetails = (props) => {
               <div
                 className="d-flex label__color flex-wrap"
                 style={{width: '500px', paddingRight: '10px'}}>
-                {values.tags.length !== 0 ? (
-                  values.tags.map((item) => (
+                {task.tags.length !== 0 ? (
+                  task.tags.map((item) => (
                     <span
+                      key={item.id}
                       className="d-flex justify-content-between align-items-center gap-2"
                       style={{backgroundColor: item.color}}>
-                      {item.tagName.length > 10
-                        ? item.tagName.slice(0, 6) + '...'
-                        : item.tagName}
+                      {item.name.length > 10
+                        ? item.name.slice(0, 6) + '...'
+                        : item.name}
                       <X
                         onClick={() => removeTag(item.id)}
                         style={{width: '15px', height: '15px'}}
@@ -170,7 +171,7 @@ const CardDetails = (props) => {
                     <h6>Check List</h6>
                   </div>
                   <div className="card__action__btn">
-                    <button onClick={() => deleteAllTask()}>
+                    <button onClick={() => deleteAllSubTasks()}>
                       Delete all tasks
                     </button>
                   </div>
@@ -190,15 +191,17 @@ const CardDetails = (props) => {
                 </div>
 
                 <div className="my-2">
-                  {values.task.length !== 0 ? (
-                    values.task.map((item, index) => (
-                      <div className="task__list d-flex align-items-start gap-2">
+                  {task.subtasks.length !== 0 ? (
+                    task.subtasks.map((item, index) => (
+                      <div
+                        key={item.id}
+                        className="task__list d-flex align-items-start gap-2">
                         <input
                           className="task__checkbox"
                           type="checkbox"
                           defaultChecked={item.completed}
                           onChange={() => {
-                            updateTask(item.id)
+                            updateSubTask(item.id)
                           }}
                         />
 
@@ -206,11 +209,11 @@ const CardDetails = (props) => {
                           className={`flex-grow-1 ${
                             item.completed === true ? 'strike-through' : ''
                           }`}>
-                          {item.task}
+                          {item.name}
                         </h6>
                         <Trash
                           onClick={() => {
-                            removeTask(item.id)
+                            removeSubTask(item.id)
                           }}
                           style={{
                             cursor: 'pointer',
@@ -228,7 +231,7 @@ const CardDetails = (props) => {
                     parentClass={'task__editable'}
                     name={'Add Task'}
                     btnName={'Add task'}
-                    onSubmit={addTask}
+                    onSubmit={addSubTask}
                   />
                 </div>
               </div>
@@ -246,7 +249,7 @@ const CardDetails = (props) => {
                   <Label
                     color={colors}
                     addTag={addTag}
-                    tags={values.tags}
+                    tags={task.tags}
                     onClose={setLabelShow}
                   />
                 )}
@@ -257,7 +260,7 @@ const CardDetails = (props) => {
                   Date
                 </button>
 
-                <button onClick={() => props.removeCard(props.bid, values.id)}>
+                <button onClick={() => props.removeCard(props.bid, task.id)}>
                   <span className="icon__sm">
                     <Trash />
                   </span>
