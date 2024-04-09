@@ -220,6 +220,7 @@ export async function SignUpFunc({email, password, username}) {
       email: email,
       username: username,
       password: password,
+      registrationDate: new Date(),
     }
 
     const response = await fetch('http://localhost:5183/Users/create', {
