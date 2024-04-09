@@ -92,6 +92,63 @@ export function ValidUsername(username) {
   return true
 }
 
+export async function AddProjectToUser({title, description}) {
+  try {
+    const storedUser = localStorage.getItem('user')
+
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser)
+      if (parsedUser.userId !== '' || parsedUser.userId !== null) {
+        const userId = parsedUser.userId
+
+        const project = {
+          title: title,
+          description: description,
+          creationDate: new Date(),
+        }
+
+        console.log(project.title)
+        console.log(project.description)
+        console.log(project.creationDate)
+        console.log('HI' + userId)
+
+        const response = await fetch(
+          `http://localhost:5183/Users/${userId}/addproject`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(project),
+          }
+        )
+
+        try {
+          console.log('The response is: ' + response)
+          const data = await response.json()
+
+          //console.log("RESPONSESSSS")
+          //console.log(response.data.data)
+
+          if (data) {
+            await GetUserRecentProjects({id: userId})
+          }
+
+          return data
+        } catch (e) {
+          console.log('entered the data condition of try catch')
+          console.log(e)
+        }
+      }
+
+      //We also call the methods to get data from API for his recent projects and recent external projects
+    }
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
 export async function GetUserRecentProjects({id}) {
   try {
     const response = await fetch(
@@ -141,7 +198,7 @@ export async function SignInFunc({email, password}) {
 
     console.log(data.message)
 
-    if (data.id) {
+    if (data) {
       const userForStorage = {
         userId: data.id,
       }
@@ -184,7 +241,7 @@ export async function SignUpFunc({email, password, username}) {
 
     console.log(data.message)
 
-    if (data.insertId) {
+    if (data) {
       const userForStorage = {
         userId: data.id,
       }
