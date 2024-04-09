@@ -34,6 +34,10 @@ const SignUp = ({setShowSignIn}) => {
     setShowPassword(!showPassword)
   }
 
+  const handleRefresh = () => {
+    setShowSignIn(false)
+  }
+
   const handleSignup = async (e) => {
     e.preventDefault()
 
@@ -59,6 +63,7 @@ const SignUp = ({setShowSignIn}) => {
             username,
           })
           console.log('Signup successful!') // Log success for debugging
+          handleRefresh()
         } catch (error) {
           // Handle specific errors (if possible)
           if (

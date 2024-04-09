@@ -4,7 +4,7 @@ import {getProjects} from '@/service/projects'
 import {GetUserRecentProjects} from '@/components/Config/Utilities'
 import Link from 'next/link'
 
-const RecentProjects = () => {
+const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
   const [recentProjects, setRecentProjects] = useState(undefined)
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const RecentProjects = () => {
       }
     }
     fetchData()
-  }, [])
+  }, [refreshProjects, setRefreshProjects])
 
   const handleClickedProject = (e, projectId) => {
     const key = e.target.key

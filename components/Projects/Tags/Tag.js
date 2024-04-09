@@ -6,7 +6,7 @@ const Tag = (props) => {
     <span
       className="tag"
       style={{backgroundColor: `${props?.color}`}}>
-      {props?.tagName}
+      {props?.name}
     </span>
     // </div>
   )

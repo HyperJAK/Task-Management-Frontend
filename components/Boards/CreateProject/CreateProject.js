@@ -1,14 +1,28 @@
 'use client'
 import React, {useState} from 'react'
+import {AddProjectToUser} from '@/components/Config/Utilities'
 
-const CreateTaskBoard = () => {
+const CreateProject = ({setRefreshProjects}) => {
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
   const [yourName, setYourName] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     // Create task project logic here
+    if (
+      (projectName !== null || projectName !== '') &&
+      (projectDescription !== null || projectDescription !== '')
+    ) {
+      const response = await AddProjectToUser({
+        title: projectName,
+        description: projectDescription,
+      })
+
+      if (response) {
+        setRefreshProjects(true)
+      }
+    }
   }
 
   return (
@@ -54,7 +68,7 @@ const CreateTaskBoard = () => {
           </div>
         </div>
         {/*Name of user who create project*/}
-        <div className="mb-6 flex flex-col justify-start md:items-center">
+        {/*<div className="mb-6 flex flex-col justify-start md:items-center">
           <div className="w-full">
             <label className="mb-1 block pr-4 text-left font-bold text-gray-500 md:mb-0">
               Your Name
@@ -69,7 +83,7 @@ const CreateTaskBoard = () => {
               required
             />
           </div>
-        </div>
+        </div>*/}
         {/*Create project button*/}
         <div className="flex w-full items-center">
           <div className="w-full">
@@ -85,4 +99,4 @@ const CreateTaskBoard = () => {
   )
 }
 
-export default CreateTaskBoard
+export default CreateProject

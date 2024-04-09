@@ -1,5 +1,5 @@
 'use client'
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 import {
   ValidEmail,
@@ -48,6 +48,10 @@ const SignIn = ({setShowSignIn}) => {
           // Assuming setUser and setCurrentScreen are defined elsewhere
           const response = await SignInFunc({email, password: hashedPass})
           console.log('Signup successful!') // Log success for debugging
+
+          if (response) {
+            setShowSignIn(true)
+          }
         } catch (error) {
           // Handle specific errors (if possible)
           if (

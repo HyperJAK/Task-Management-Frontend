@@ -46,7 +46,8 @@ const Board = (props) => {
             </p>
           </div>
         )}
-        <div
+        {/*More options to delete board*/}
+        {/*<div
           onClick={() => {
             setDropdown(true)
           }}>
@@ -60,7 +61,7 @@ const Board = (props) => {
               <p onClick={() => props.removeBoard(props.id)}>Delete Board</p>
             </Dropdown>
           )}
-        </div>
+        </div>*/}
       </div>
       <Droppable droppableId={props.id.toString()}>
         {(provided) => (
@@ -74,7 +75,7 @@ const Board = (props) => {
                 id={items.id}
                 index={index}
                 key={items.id}
-                title={items.title}
+                title={items.name}
                 tags={items.tags}
                 updateCard={props.updateCard}
                 removeCard={props.removeCard}
@@ -85,11 +86,12 @@ const Board = (props) => {
           </div>
         )}
       </Droppable>
+      {/*Add card logic*/}
       <div className="board__footer">
         <Editable
-          name={'Add Card'}
+          name={'Add Task'}
           btnName={'Add Card'}
-          placeholder={'Enter Card Title'}
+          placeholder={'Enter Task Title'}
           onSubmit={(value) => props.addCard(value, props.id)}
         />
       </div>

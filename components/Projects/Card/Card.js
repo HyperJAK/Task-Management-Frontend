@@ -17,7 +17,7 @@ const Card = (props) => {
       index={props.index}>
       {/*Each individual task placed here*/}
       {(provided) => (
-        <div className={'bg-secondary'}>
+        <div>
           {modalShow && (
             <CardDetails
               updateCard={props.updateCard}
@@ -49,7 +49,7 @@ const Card = (props) => {
               {props.tags?.map((item, index) => (
                 <Tag
                   key={index}
-                  tagName={item.tagName}
+                  name={item.name}
                   color={item.color}
                 />
               ))}
@@ -61,16 +61,16 @@ const Card = (props) => {
                 <Clock />
                 <span>Sun 12:30</span>
               </div> */}
-              {props.card.task.length !== 0 && (
+              {props.card.subtasks.length !== 0 && (
                 <div className="task">
                   <CheckSquare />
                   <span>
-                    {props.card.task.length !== 0
+                    {props.card.subtasks.length !== 0
                       ? `${
-                          (props.card.task?.filter(
+                          (props.card.subtasks?.filter(
                             (item) => item.completed === true
                           )).length
-                        } / ${props.card.task.length}`
+                        } / ${props.card.subtasks.length}`
                       : `${'0/0'}`}
                   </span>
                 </div>
