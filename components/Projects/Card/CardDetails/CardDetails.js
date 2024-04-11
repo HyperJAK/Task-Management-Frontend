@@ -19,6 +19,7 @@ import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
 import {AddSubTaskToTask, AddTagToTask} from '@/service/task'
 import {RemoveTag} from '@/service/tag'
+import {UpdateSubTask} from '@/service/subTask'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -71,14 +72,23 @@ const CardDetails = (props) => {
     })
   }
 
-  const updateSubTask = ({id}) => {
+  const updateSubTask = async ({id}) => {
     const taskIndex = task.subtasks.findIndex((item) => item.id === id)
-    task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
-
     const subTask = task.subtasks[taskIndex]
+    task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
     //Same fetch logic here to put a subtask to completed
 
-    setTask({...task})
+    const response = await UpdateSubTask({
+      id: task.id,
+      name: subTask.name,
+      completed: subTask.completed,
+    })
+
+    if (response) {
+      setTask({...task})
+    } else {
+      console.log('Failed to add tag')
+    }
   }
   const updateName = (value) => {
     setTask({...task, name: value})
