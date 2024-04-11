@@ -17,6 +17,7 @@ import Modal from '../../Modal/Modal'
 import './CardDetails.css'
 import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
+import {AddSubTaskToTask} from '@/service/task'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -39,14 +40,20 @@ const CardDetails = (props) => {
       </div>
     )
   }
-  const addSubTask = ({name}) => {
+  const addSubTask = async ({name}) => {
     //fetch logic here to add a subtask
-    task.subtasks.push({
-      id: uuidv4(),
-      name: name,
-      completed: false,
-    })
-    setTask({...task})
+    const response = await AddSubTaskToTask({id: task.id, name: name})
+
+    if (response) {
+      task.subtasks.push({
+        id: response.id,
+        name: response.name,
+        completed: response.completed,
+      })
+      setTask({...task})
+    } else {
+      console.log('Failed to add subtask')
+    }
   }
 
   const removeSubTask = (id) => {

@@ -52,6 +52,44 @@ export async function AddTaskToProject({id, name}) {
   }
 }
 
+export async function AddSubTaskToTask({id, name}) {
+  try {
+    const subTask = {
+      name: name,
+      completed: false,
+    }
+
+    const response = await fetch(
+      `http://localhost:5183/Projects/${id}/addSubTask`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(subTask),
+      }
+    )
+
+    try {
+      console.log('The response is: ' + response)
+      const data = await response.json()
+
+      //console.log("RESPONSESSSS")
+      //console.log(response.data.data)
+
+      return data
+    } catch (e) {
+      console.log('entered the data condition of try catch')
+      console.log(e)
+    }
+
+    //We also call the methods to get data from API for his recent projects and recent external projects
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
 export async function GetTaskSubTasks({id}) {
   try {
     const response = await fetch(
