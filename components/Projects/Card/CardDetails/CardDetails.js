@@ -18,6 +18,7 @@ import './CardDetails.css'
 import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
 import {AddSubTaskToTask, AddTagToTask} from '@/service/task'
+import {RemoveTag} from '@/service/tag'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -92,12 +93,18 @@ const CardDetails = (props) => {
     return Math.floor((completedTask * 100) / totalTask) || 0
   }
 
-  const removeTag = (id) => {
-    const tempTag = task.tags.filter((item) => item.id !== id)
-    setTask({
-      ...task,
-      tags: tempTag,
-    })
+  const removeTag = async ({id}) => {
+    const response = await RemoveTag({id: id})
+
+    if (response) {
+      const tempTag = task.tags.filter((item) => item.id !== id)
+      setTask({
+        ...task,
+        tags: tempTag,
+      })
+    } else {
+      console.log('Failed to delete tag')
+    }
   }
 
   const addTag = async ({name, color}) => {
@@ -112,7 +119,7 @@ const CardDetails = (props) => {
 
       setTask({...task})
     } else {
-      console.log('Failed to add subtask')
+      console.log('Failed to add tag')
     }
   }
 
@@ -171,7 +178,7 @@ const CardDetails = (props) => {
                         ? item.name.slice(0, 6) + '...'
                         : item.name}
                       <X
-                        onClick={() => removeTag(item.id)}
+                        onClick={() => removeTag({id: item.id})}
                         style={{width: '15px', height: '15px'}}
                       />
                     </span>
