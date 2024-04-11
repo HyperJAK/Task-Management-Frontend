@@ -40,6 +40,7 @@ const CardDetails = (props) => {
     )
   }
   const addSubTask = ({name}) => {
+    //fetch logic here to add a subtask
     task.subtasks.push({
       id: uuidv4(),
       name: name,
@@ -49,11 +50,13 @@ const CardDetails = (props) => {
   }
 
   const removeSubTask = (id) => {
+    //Same fetch logic here to remove subtask
     const remaningSubTasks = task.subtasks.filter((item) => item.id !== id)
     setTask({...task, subtasks: remaningSubTasks})
   }
 
   const deleteAllSubTasks = () => {
+    //Same fetch logic here to remove all subtasks
     setTask({
       ...task,
       subtasks: [],
@@ -61,6 +64,7 @@ const CardDetails = (props) => {
   }
 
   const updateSubTask = (id) => {
+    //Same fetch logic here to put a subtask to completed
     const taskIndex = task.subtasks.findIndex((item) => item.id === id)
     task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
     setTask({...task})

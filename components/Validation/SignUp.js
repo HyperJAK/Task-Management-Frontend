@@ -3,8 +3,6 @@ import {useState} from 'react'
 import {
   ValidEmail,
   ValidPassword,
-  SignUpFunc,
-  EncryptPassword,
   ValidUsername,
   HashPassword,
 } from '../Config/Utilities'
@@ -15,6 +13,7 @@ import Link from 'next/link'
 import Title from '../Validation/Title'
 import Image from 'next/image'
 import {Rubik} from 'next/font/google'
+import {SignUpFunc} from '@/service/user'
 
 const rubikBold = Rubik({
   subsets: ['latin'],

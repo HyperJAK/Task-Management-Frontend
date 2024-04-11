@@ -1,6 +1,6 @@
 'use client'
 import {useEffect, useState} from 'react'
-import {getExternalProjects, getProjects} from '@/service/projects'
+import {getExternalProjects, getProjects} from '@/service/project'
 
 const RecentExternalProjects = () => {
   const [recentExternalProjects, setRecentExternalProjects] =

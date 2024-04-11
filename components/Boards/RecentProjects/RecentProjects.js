@@ -1,6 +1,6 @@
 'use client'
 import {useEffect, useState} from 'react'
-import {getProjects} from '@/service/projects'
+import {getProjects} from '@/service/project'
 import {GetUserRecentProjects} from '@/components/Config/Utilities'
 import Link from 'next/link'
 

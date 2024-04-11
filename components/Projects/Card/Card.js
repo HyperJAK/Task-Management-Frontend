@@ -46,9 +46,9 @@ const Card = (props) => {
             </div>
 
             <div className="card__tags">
-              {props.tags?.map((item, index) => (
+              {props.tags?.map((item) => (
                 <Tag
-                  key={index}
+                  key={item.id}
                   name={item.name}
                   color={item.color}
                 />

@@ -1,16 +1,16 @@
 'use client'
 import {useEffect, useState} from 'react'
 import '../App.css'
-import Navbar from '../../components/Projects/Navbar/Navbar'
+
 import Board from '../../components/Projects/Board/Board'
 // import data from '../data'
 import {DragDropContext} from 'react-beautiful-dnd'
-import {v4 as uuidv4} from 'uuid'
-import Editable from '../../components/Projects/Editable/Editable'
+
 import useLocalStorage from 'use-local-storage'
 import '../Bootstrap.css'
-import {forEach} from 'react-bootstrap/ElementChildren'
-import {AddTaskToProject, GetProjectTasks} from '@/components/Config/Utilities'
+
+import {AddTaskToProject, GetTaskSubTasks, GetTaskTags} from '@/service/task'
+import {GetProjectTasks} from '@/service/project'
 const Project = () => {
   const [data, setData] = useState([])
   const [loadedData, setLoadedData] = useState(false)
@@ -160,15 +160,29 @@ const Project = () => {
 
             //We fill the tasks in the correct board
 
-            response.forEach((task) => {
-              //because API doesnt return the empty subtasks array with tasks, then we initialise it
-              if (!task.subtasks) {
-                task.subtasks = []
+            for (const task of response) {
+              //Call for API to get Subtasks and Tags for the task
+              const responseSubTasks = await GetTaskSubTasks({id: task.id})
+
+              //Call for API to get Subtasks and Tags for the task
+              const responseTags = await GetTaskTags({id: task.id})
+
+              //If the API returns nothing for tags and subtasks then we initialise them to empty
+              if (responseSubTasks) {
+                task.subtasks = responseSubTasks
+              } else {
+                if (!task.subtasks) {
+                  task.subtasks = []
+                }
               }
 
-              //same with tags
-              if (!task.tags) {
-                task.tags = []
+              if (responseTags) {
+                task.tags = responseTags
+              } else {
+                //same with tags
+                if (!task.tags) {
+                  task.tags = []
+                }
               }
 
               if (task.status === 'Ongoing') {
@@ -178,7 +192,7 @@ const Project = () => {
               } else if (task.status === 'Completed') {
                 tempData[2].card.push(task)
               }
-            })
+            }
             //finally we add everything to data object
             setData(tempData)
             setLoadedData(true)
