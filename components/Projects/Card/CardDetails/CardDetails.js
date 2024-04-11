@@ -17,7 +17,11 @@ import Modal from '../../Modal/Modal'
 import './CardDetails.css'
 import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
-import {AddSubTaskToTask, AddTagToTask} from '@/service/task'
+import {
+  AddSubTaskToTask,
+  AddTagToTask,
+  RemoveAllTaskSubTasks,
+} from '@/service/task'
 import {RemoveTag} from '@/service/tag'
 import {UpdateSubTask} from '@/service/subTask'
 
@@ -64,12 +68,18 @@ const CardDetails = (props) => {
     setTask({...task, subtasks: remaningSubTasks})
   }
 
-  const deleteAllSubTasks = () => {
+  const deleteAllSubTasks = async ({id}) => {
     //Same fetch logic here to remove all subtasks
-    setTask({
-      ...task,
-      subtasks: [],
-    })
+    const response = await RemoveAllTaskSubTasks({id: id})
+
+    if (response) {
+      setTask({
+        ...task,
+        subtasks: [],
+      })
+    } else {
+      console.log('Failed to remove all subtasks')
+    }
   }
 
   const updateSubTask = async ({id}) => {
@@ -208,7 +218,7 @@ const CardDetails = (props) => {
                     <h6>Check List</h6>
                   </div>
                   <div className="card__action__btn">
-                    <button onClick={() => deleteAllSubTasks()}>
+                    <button onClick={() => deleteAllSubTasks({id: task.id})}>
                       Delete all tasks
                     </button>
                   </div>
