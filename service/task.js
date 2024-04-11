@@ -54,13 +54,15 @@ export async function AddTaskToProject({id, name}) {
 
 export async function AddSubTaskToTask({id, name}) {
   try {
+    console.log('The Task id: ' + id)
+    console.log('The Subtask name is: ' + name)
     const subTask = {
       name: name,
       completed: false,
     }
 
     const response = await fetch(
-      `http://localhost:5183/Projects/${id}/addSubTask`,
+      `http://localhost:5183/Tasks/${id}/addSubTask`,
       {
         method: 'POST',
         headers: {

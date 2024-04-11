@@ -56,7 +56,7 @@ const CardDetails = (props) => {
     }
   }
 
-  const removeSubTask = (id) => {
+  const removeSubTask = ({id}) => {
     //Same fetch logic here to remove subtask
     const remaningSubTasks = task.subtasks.filter((item) => item.id !== id)
     setTask({...task, subtasks: remaningSubTasks})
