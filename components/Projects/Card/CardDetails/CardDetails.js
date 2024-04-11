@@ -17,7 +17,7 @@ import Modal from '../../Modal/Modal'
 import './CardDetails.css'
 import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
-import {AddSubTaskToTask} from '@/service/task'
+import {AddSubTaskToTask, AddTagToTask} from '@/service/task'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -70,10 +70,13 @@ const CardDetails = (props) => {
     })
   }
 
-  const updateSubTask = (id) => {
-    //Same fetch logic here to put a subtask to completed
+  const updateSubTask = ({id}) => {
     const taskIndex = task.subtasks.findIndex((item) => item.id === id)
     task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
+
+    const subTask = task.subtasks[taskIndex]
+    //Same fetch logic here to put a subtask to completed
+
     setTask({...task})
   }
   const updateName = (value) => {
@@ -97,14 +100,20 @@ const CardDetails = (props) => {
     })
   }
 
-  const addTag = (value, color) => {
-    task.tags.push({
-      id: uuidv4(),
-      name: value,
-      color: color,
-    })
+  const addTag = async ({name, color}) => {
+    const response = await AddTagToTask({id: task.id, name: name, color: color})
 
-    setTask({...task})
+    if (response) {
+      task.tags.push({
+        id: response.id,
+        name: response.name,
+        color: response.color,
+      })
+
+      setTask({...task})
+    } else {
+      console.log('Failed to add subtask')
+    }
   }
 
   const handelClickListner = (e) => {
@@ -212,7 +221,7 @@ const CardDetails = (props) => {
                           type="checkbox"
                           defaultChecked={item.completed}
                           onChange={() => {
-                            updateSubTask(item.id)
+                            updateSubTask({id: item.id})
                           }}
                         />
 
