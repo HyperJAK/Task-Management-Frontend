@@ -17,6 +17,13 @@ import Modal from '../../Modal/Modal'
 import './CardDetails.css'
 import {v4 as uuidv4} from 'uuid'
 import Label from '../../Label/Label'
+import {
+  AddSubTaskToTask,
+  AddTagToTask,
+  RemoveAllTaskSubTasks,
+} from '@/service/task'
+import {RemoveTag} from '@/service/tag'
+import {RemoveSubTask, UpdateSubTask} from '@/service/subTask'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -39,31 +46,66 @@ const CardDetails = (props) => {
       </div>
     )
   }
-  const addSubTask = ({name}) => {
-    task.subtasks.push({
-      id: uuidv4(),
-      name: name,
-      completed: false,
-    })
-    setTask({...task})
+  const addSubTask = async ({name}) => {
+    //fetch logic here to add a subtask
+    const response = await AddSubTaskToTask({id: task.id, name: name})
+
+    if (response) {
+      task.subtasks.push({
+        id: response.id,
+        name: response.name,
+        completed: response.completed,
+      })
+      setTask({...task})
+    } else {
+      console.log('Failed to add subtask')
+    }
   }
 
-  const removeSubTask = (id) => {
+  const removeSubTask = async ({id}) => {
+    //Same fetch logic here to remove subtask
     const remaningSubTasks = task.subtasks.filter((item) => item.id !== id)
-    setTask({...task, subtasks: remaningSubTasks})
+
+    const response = await RemoveSubTask({id: id})
+
+    if (response) {
+      setTask({...task, subtasks: remaningSubTasks})
+    } else {
+      console.log('Failed to remove subtask')
+    }
   }
 
-  const deleteAllSubTasks = () => {
-    setTask({
-      ...task,
-      subtasks: [],
-    })
+  const deleteAllSubTasks = async ({id}) => {
+    //Same fetch logic here to remove all subtasks
+    const response = await RemoveAllTaskSubTasks({id: id})
+
+    if (response) {
+      setTask({
+        ...task,
+        subtasks: [],
+      })
+    } else {
+      console.log('Failed to remove all subtasks')
+    }
   }
 
-  const updateSubTask = (id) => {
+  const updateSubTask = async ({id}) => {
     const taskIndex = task.subtasks.findIndex((item) => item.id === id)
+    const subTask = task.subtasks[taskIndex]
     task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
-    setTask({...task})
+    //Same fetch logic here to put a subtask to completed
+
+    const response = await UpdateSubTask({
+      id: task.id,
+      name: subTask.name,
+      completed: subTask.completed,
+    })
+
+    if (response) {
+      setTask({...task})
+    } else {
+      console.log('Failed to add tag')
+    }
   }
   const updateName = (value) => {
     setTask({...task, name: value})
@@ -78,22 +120,34 @@ const CardDetails = (props) => {
     return Math.floor((completedTask * 100) / totalTask) || 0
   }
 
-  const removeTag = (id) => {
-    const tempTag = task.tags.filter((item) => item.id !== id)
-    setTask({
-      ...task,
-      tags: tempTag,
-    })
+  const removeTag = async ({id}) => {
+    const response = await RemoveTag({id: id})
+
+    if (response) {
+      const tempTag = task.tags.filter((item) => item.id !== id)
+      setTask({
+        ...task,
+        tags: tempTag,
+      })
+    } else {
+      console.log('Failed to delete tag')
+    }
   }
 
-  const addTag = (value, color) => {
-    task.tags.push({
-      id: uuidv4(),
-      name: value,
-      color: color,
-    })
+  const addTag = async ({name, color}) => {
+    const response = await AddTagToTask({id: task.id, name: name, color: color})
 
-    setTask({...task})
+    if (response) {
+      task.tags.push({
+        id: response.id,
+        name: response.name,
+        color: response.color,
+      })
+
+      setTask({...task})
+    } else {
+      console.log('Failed to add tag')
+    }
   }
 
   const handelClickListner = (e) => {
@@ -151,7 +205,7 @@ const CardDetails = (props) => {
                         ? item.name.slice(0, 6) + '...'
                         : item.name}
                       <X
-                        onClick={() => removeTag(item.id)}
+                        onClick={() => removeTag({id: item.id})}
                         style={{width: '15px', height: '15px'}}
                       />
                     </span>
@@ -171,7 +225,7 @@ const CardDetails = (props) => {
                     <h6>Check List</h6>
                   </div>
                   <div className="card__action__btn">
-                    <button onClick={() => deleteAllSubTasks()}>
+                    <button onClick={() => deleteAllSubTasks({id: task.id})}>
                       Delete all tasks
                     </button>
                   </div>
@@ -201,7 +255,7 @@ const CardDetails = (props) => {
                           type="checkbox"
                           defaultChecked={item.completed}
                           onChange={() => {
-                            updateSubTask(item.id)
+                            updateSubTask({id: item.id})
                           }}
                         />
 
@@ -213,7 +267,7 @@ const CardDetails = (props) => {
                         </h6>
                         <Trash
                           onClick={() => {
-                            removeSubTask(item.id)
+                            removeSubTask({id: item.id})
                           }}
                           style={{
                             cursor: 'pointer',

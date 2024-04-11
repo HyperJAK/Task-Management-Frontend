@@ -83,7 +83,7 @@ const Label = (props) => {
                     if (selectedColor === '') {
                       alert('Please select color for label.')
                     }
-                    props.addTag(label, selectedColor)
+                    props.addTag({name: label, color: selectedColor})
                     setSelectedColor('')
                     setLabel('')
                     input.current.value = ''
