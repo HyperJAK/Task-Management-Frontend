@@ -32,18 +32,13 @@ export async function UpdateSubTask({id, name, completed}) {
   }
 }
 
-export async function RemoveSubTask({id, name, completed}) {
+export async function RemoveSubTask({id}) {
   try {
-    const subTask = {
-      name: name,
-      completed: completed,
-    }
     const response = await fetch(`http://localhost:5183/SubTasks/${id}`, {
-      method: 'PUT',
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(subTask),
     })
 
     try {

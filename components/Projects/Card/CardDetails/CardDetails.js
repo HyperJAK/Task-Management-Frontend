@@ -23,7 +23,7 @@ import {
   RemoveAllTaskSubTasks,
 } from '@/service/task'
 import {RemoveTag} from '@/service/tag'
-import {UpdateSubTask} from '@/service/subTask'
+import {RemoveSubTask, UpdateSubTask} from '@/service/subTask'
 
 const CardDetails = (props) => {
   const colors = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0']
@@ -62,10 +62,17 @@ const CardDetails = (props) => {
     }
   }
 
-  const removeSubTask = ({id}) => {
+  const removeSubTask = async ({id}) => {
     //Same fetch logic here to remove subtask
     const remaningSubTasks = task.subtasks.filter((item) => item.id !== id)
-    setTask({...task, subtasks: remaningSubTasks})
+
+    const response = await RemoveSubTask({id: id})
+
+    if (response) {
+      setTask({...task, subtasks: remaningSubTasks})
+    } else {
+      console.log('Failed to remove subtask')
+    }
   }
 
   const deleteAllSubTasks = async ({id}) => {
@@ -260,7 +267,7 @@ const CardDetails = (props) => {
                         </h6>
                         <Trash
                           onClick={() => {
-                            removeSubTask(item.id)
+                            removeSubTask({id: item.id})
                           }}
                           style={{
                             cursor: 'pointer',
