@@ -1,8 +1,7 @@
 'use client'
 import {useEffect, useState} from 'react'
-import {getProjects} from '@/service/project'
-import {GetUserRecentProjects} from '@/components/Config/Utilities'
 import Link from 'next/link'
+import {GetUserRecentProjects} from '@/service/project'
 
 const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
   const [recentProjects, setRecentProjects] = useState(undefined)
