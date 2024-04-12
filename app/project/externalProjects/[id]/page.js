@@ -1,13 +1,13 @@
 'use client'
 import {useEffect, useState} from 'react'
-import '../../App.css'
+import '../../../App.css'
 
-import Board from '../../../components/Projects/Board/Board'
+import Board from '../../../../components/Projects/Board/Board'
 // import data from '../data'
 import {DragDropContext} from 'react-beautiful-dnd'
 
 import useLocalStorage from 'use-local-storage'
-import '../../Bootstrap.css'
+import '../../../Bootstrap.css'
 
 import {
   AddTaskToProject,

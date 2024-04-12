@@ -1,4 +1,4 @@
-export async function AddProjectToUser({title, description}) {
+export async function CreateProject({title, description}) {
   try {
     const storedUser = localStorage.getItem('user')
 
@@ -11,6 +11,7 @@ export async function AddProjectToUser({title, description}) {
           title: title,
           description: description,
           creationDate: new Date(),
+          creatorId: userId,
         }
 
         console.log(project.title)
@@ -18,16 +19,13 @@ export async function AddProjectToUser({title, description}) {
         console.log(project.creationDate)
         console.log('HI' + userId)
 
-        const response = await fetch(
-          `http://localhost:5183/Users/${userId}/addproject`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(project),
-          }
-        )
+        const response = await fetch(`http://localhost:5183/Projects`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(project),
+        })
 
         try {
           console.log('The response is: ' + response)
@@ -79,6 +77,38 @@ export async function GetUserRecentProjects({id}) {
     }
 
     return data
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
+export async function GetUserExternalProjects({userId}) {
+  try {
+    const response = await fetch(
+      `http://localhost:5183/Projects/getExternalProjectsForUser/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await response.json()
+
+    if (data) {
+      const userForStorage = {
+        externalProjects: data,
+      }
+
+      localStorage.setItem('externalProjects', JSON.stringify(userForStorage))
+      console.log('Saved in local storage after getting external projects')
+
+      return data
+    }
+
+    return null
   } catch (error) {
     //alert(error.response.data.error);
     console.log(error)

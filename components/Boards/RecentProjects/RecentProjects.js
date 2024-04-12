@@ -56,7 +56,7 @@ const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
             {recentProjects.map((recentProject) => (
               <Link
                 key={recentProject.id}
-                href={`/project/${recentProject.title}`}>
+                href={`/project/recentProjects/${recentProject.title}`}>
                 <tr
                   key={recentProject.id}
                   className="cursor-pointer hover:bg-gray-100"
