@@ -16,6 +16,7 @@ import {
   RemoveAllTags,
   RemoveAllTaskSubTasks,
   RemoveTask,
+  UpdateTaskStatus,
 } from '@/service/task'
 import {GetProjectTasks} from '@/service/project'
 const Project = () => {
@@ -39,7 +40,7 @@ const Project = () => {
     setData(tempData)
   }
 
-  const dragCardInBoard = (source, destination) => {
+  const dragCardInBoard = async (source, destination) => {
     let tempData = [...data]
     const destinationBoardIdx = tempData.findIndex(
       (item) => item.id.toString() === destination.droppableId
@@ -47,6 +48,25 @@ const Project = () => {
     const sourceBoardIdx = tempData.findIndex(
       (item) => item.id.toString() === source.droppableId
     )
+
+    // Get the card being dragged
+    const cardToMove = tempData[sourceBoardIdx].card[source.index]
+
+    // Modify the status of the card based on the destination board
+
+    console.log('Destination board : ' + destinationBoardIdx)
+    console.log('Source board : ' + sourceBoardIdx)
+    const response = await UpdateTaskStatus({
+      id: cardToMove.id,
+      boardId: destinationBoardIdx + 1,
+    })
+
+    if (response) {
+      cardToMove.status = response.status
+    } else {
+      console.log("Couldn't update card status")
+    }
+
     tempData[destinationBoardIdx].card.splice(
       destination.index,
       0,
@@ -128,13 +148,13 @@ const Project = () => {
     setData(tempData)
   }
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const {source, destination} = result
     if (!destination) return
 
     if (source.droppableId === destination.droppableId) return
 
-    setData(dragCardInBoard(source, destination))
+    setData(await dragCardInBoard(source, destination))
   }
 
   const updateCard = ({bid, taskId, task}) => {
@@ -246,6 +266,8 @@ const Project = () => {
         <div className="app_outer">
           <div className="app_boards">
             {loadedData &&
+              data &&
+              data.length > 0 &&
               data.map((item) => (
                 <Board
                   key={item.id}

@@ -269,3 +269,47 @@ export async function RemoveTask({id}) {
     console.log(error)
   }
 }
+
+export async function UpdateTaskStatus({id, boardId}) {
+  try {
+    const task = {
+      status:
+        boardId === 1
+          ? 'Ongoing'
+          : boardId === 2
+            ? 'Planned'
+            : boardId === 3
+              ? 'Completed'
+              : '',
+    }
+
+    const response = await fetch(
+      `http://localhost:5183/Tasks/${id}/updateTaskStatus`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(task),
+      }
+    )
+
+    try {
+      console.log('The response is: ' + response)
+      const data = await response.json()
+
+      //console.log("RESPONSESSSS")
+      //console.log(response.data.data)
+
+      return data
+    } catch (e) {
+      console.log('entered the data condition of try catch')
+      console.log(e)
+    }
+
+    //We also call the methods to get data from API for his recent projects and recent external projects
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
