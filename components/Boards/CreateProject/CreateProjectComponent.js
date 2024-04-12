@@ -1,8 +1,8 @@
 'use client'
 import React, {useState} from 'react'
-import {AddProjectToUser} from '@/components/Config/Utilities'
+import {CreateProject} from '@/service/project'
 
-const CreateProject = ({setRefreshProjects}) => {
+const CreateProjectComponent = ({setRefreshProjects}) => {
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
   const [yourName, setYourName] = useState('')
@@ -14,7 +14,7 @@ const CreateProject = ({setRefreshProjects}) => {
       (projectName !== null || projectName !== '') &&
       (projectDescription !== null || projectDescription !== '')
     ) {
-      const response = await AddProjectToUser({
+      const response = await CreateProject({
         title: projectName,
         description: projectDescription,
       })
@@ -99,4 +99,4 @@ const CreateProject = ({setRefreshProjects}) => {
   )
 }
 
-export default CreateProject
+export default CreateProjectComponent

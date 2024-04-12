@@ -2,7 +2,7 @@ import {useState} from 'react'
 import {Divider, Grid, Slide, Typography} from '@mui/material'
 /*import { useRouteMatch } from 'react-router-dom';*/
 import Footer from '../../components/Footer/Footer'
-import CreateBoard from '@/components/Boards/CreateProject/CreateProject'
+import CreateBoard from '@/components/Boards/CreateProject/CreateProjectComponent'
 import RecentProjects from '@/components/Boards/RecentProjects/RecentProjects'
 import LandingImage from './../../images/background.jpg'
 import SessionControllerImage from './../../images/Session.jpg'

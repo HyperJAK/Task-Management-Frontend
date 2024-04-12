@@ -1,14 +1,14 @@
 'use client'
 import Image from 'next/image'
 import Toolbar from '@/components/Toolbar/Toolbar'
-import CreateBoard from '@/components/Boards/CreateProject/CreateProject'
+import CreateBoard from '@/components/Boards/CreateProject/CreateProjectComponent'
 import RecentProjects from '@/components/Boards/RecentProjects/RecentProjects'
 import RecentExternalProjects from '@/components/Boards/ExternalProjects/RecentExternalProjects'
 import {useEffect, useState} from 'react'
 import SignIn from '@/components/Validation/SignIn'
 import SignUp from '@/components/Validation/SignUp'
 import Button from '@/components/Validation/Button'
-import CreateProject from '@/components/Boards/CreateProject/CreateProject'
+import CreateProjectComponent from '@/components/Boards/CreateProject/CreateProjectComponent'
 
 export default function Home() {
   const [showSignIn, setShowSignIn] = useState(true)
@@ -76,7 +76,7 @@ export default function Home() {
                 <RecentExternalProjects />
               </div>
 
-              <CreateProject setRefreshProjects={setRefreshProjects} />
+              <CreateProjectComponent setRefreshProjects={setRefreshProjects} />
             </div>
           </>
         )}

@@ -46,7 +46,7 @@ const CardDetails = (props) => {
       </div>
     )
   }
-  const addSubTask = async ({name}) => {
+  const addSubTask = async (name) => {
     //fetch logic here to add a subtask
     const response = await AddSubTaskToTask({id: task.id, name: name})
 
@@ -92,19 +92,23 @@ const CardDetails = (props) => {
   const updateSubTask = async ({id}) => {
     const taskIndex = task.subtasks.findIndex((item) => item.id === id)
     const subTask = task.subtasks[taskIndex]
-    task.subtasks[taskIndex].completed = !task.subtasks[taskIndex].completed
+    const updatedSubtasks = [...task.subtasks]
+    updatedSubtasks[taskIndex].completed = !updatedSubtasks[taskIndex].completed
     //Same fetch logic here to put a subtask to completed
 
     const response = await UpdateSubTask({
-      id: task.id,
+      id: id,
       name: subTask.name,
       completed: subTask.completed,
     })
 
     if (response) {
-      setTask({...task})
+      setTask({
+        ...task,
+        subtasks: updatedSubtasks,
+      })
     } else {
-      console.log('Failed to add tag')
+      console.log('Failed to add Subtask')
     }
   }
   const updateName = (value) => {
@@ -164,7 +168,8 @@ const CardDetails = (props) => {
     }
   })
   useEffect(() => {
-    if (props.updateCard) props.updateCard(props.bid, task.id, task)
+    if (props.updateCard)
+      props.updateCard({bid: props.bid, taskId: task.id, task: task})
   }, [task])
 
   return (
@@ -314,7 +319,10 @@ const CardDetails = (props) => {
                   Date
                 </button>
 
-                <button onClick={() => props.removeCard(props.bid, task.id)}>
+                <button
+                  onClick={() =>
+                    props.removeCard({boardId: props.bid, cardId: task.id})
+                  }>
                   <span className="icon__sm">
                     <Trash />
                   </span>

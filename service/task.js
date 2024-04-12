@@ -7,6 +7,7 @@ export async function AddTaskToProject({id, name}) {
       if (parsedProject.key !== '' || parsedProject.key !== null) {
         const projectId = parsedProject.key
 
+        console.log('The project id is : ' + projectId)
         const task = {
           name: name,
           status:
@@ -18,6 +19,9 @@ export async function AddTaskToProject({id, name}) {
                   ? 'Completed'
                   : '',
         }
+
+        console.log('Name is: ' + task.name)
+        console.log('Status is: ' + task.status)
 
         const response = await fetch(
           `http://localhost:5183/Projects/${projectId}/addtask`,
@@ -31,7 +35,7 @@ export async function AddTaskToProject({id, name}) {
         )
 
         try {
-          console.log('The response is: ' + response)
+          console.log('The response is: ' + response.id)
           const data = await response.json()
 
           //console.log("RESPONSESSSS")
@@ -182,6 +186,111 @@ export async function RemoveAllTaskSubTasks({id}) {
         headers: {
           'Content-Type': 'application/json',
         },
+      }
+    )
+
+    try {
+      console.log('The response is: ' + response)
+      const data = await response.json()
+
+      //console.log("RESPONSESSSS")
+      //console.log(response.data.data)
+
+      return data
+    } catch (e) {
+      console.log('entered the data condition of try catch')
+      console.log(e)
+    }
+
+    //We also call the methods to get data from API for his recent projects and recent external projects
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
+export async function RemoveAllTags({id}) {
+  try {
+    const response = await fetch(
+      `http://localhost:5183/Tasks/${id}/removeAllTags`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    try {
+      console.log('The response is: ' + response)
+      const data = await response.json()
+
+      //console.log("RESPONSESSSS")
+      //console.log(response.data.data)
+
+      return data
+    } catch (e) {
+      console.log('entered the data condition of try catch')
+      console.log(e)
+    }
+
+    //We also call the methods to get data from API for his recent projects and recent external projects
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
+export async function RemoveTask({id}) {
+  try {
+    const response = await fetch(`http://localhost:5183/Tasks/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    try {
+      console.log('The response is: ' + response)
+      const data = await response.json()
+
+      //console.log("RESPONSESSSS")
+      //console.log(response.data.data)
+
+      return data
+    } catch (e) {
+      console.log('entered the data condition of try catch')
+      console.log(e)
+    }
+
+    //We also call the methods to get data from API for his recent projects and recent external projects
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}
+
+export async function UpdateTaskStatus({id, boardId}) {
+  try {
+    const task = {
+      status:
+        boardId === 1
+          ? 'Ongoing'
+          : boardId === 2
+            ? 'Planned'
+            : boardId === 3
+              ? 'Completed'
+              : '',
+    }
+
+    const response = await fetch(
+      `http://localhost:5183/Tasks/${id}/updateTaskStatus`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(task),
       }
     )
 

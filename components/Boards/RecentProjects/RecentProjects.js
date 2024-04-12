@@ -1,8 +1,7 @@
 'use client'
 import {useEffect, useState} from 'react'
-import {getProjects} from '@/service/project'
-import {GetUserRecentProjects} from '@/components/Config/Utilities'
 import Link from 'next/link'
+import {GetUserRecentProjects} from '@/service/project'
 
 const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
   const [recentProjects, setRecentProjects] = useState(undefined)
@@ -57,7 +56,7 @@ const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
             {recentProjects.map((recentProject) => (
               <Link
                 key={recentProject.id}
-                href={'/project'}>
+                href={`/project/recentProjects/${recentProject.title}`}>
                 <tr
                   key={recentProject.id}
                   className="cursor-pointer hover:bg-gray-100"

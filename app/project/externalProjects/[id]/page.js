@@ -1,15 +1,23 @@
 'use client'
 import {useEffect, useState} from 'react'
-import '../App.css'
+import '../../../App.css'
 
-import Board from '../../components/Projects/Board/Board'
+import Board from '../../../../components/Projects/Board/Board'
 // import data from '../data'
 import {DragDropContext} from 'react-beautiful-dnd'
 
 import useLocalStorage from 'use-local-storage'
-import '../Bootstrap.css'
+import '../../../Bootstrap.css'
 
-import {AddTaskToProject, GetTaskSubTasks, GetTaskTags} from '@/service/task'
+import {
+  AddTaskToProject,
+  GetTaskSubTasks,
+  GetTaskTags,
+  RemoveAllTags,
+  RemoveAllTaskSubTasks,
+  RemoveTask,
+  UpdateTaskStatus,
+} from '@/service/task'
 import {GetProjectTasks} from '@/service/project'
 const Project = () => {
   const [data, setData] = useState([])
@@ -32,7 +40,7 @@ const Project = () => {
     setData(tempData)
   }
 
-  const dragCardInBoard = (source, destination) => {
+  const dragCardInBoard = async (source, destination) => {
     let tempData = [...data]
     const destinationBoardIdx = tempData.findIndex(
       (item) => item.id.toString() === destination.droppableId
@@ -40,6 +48,25 @@ const Project = () => {
     const sourceBoardIdx = tempData.findIndex(
       (item) => item.id.toString() === source.droppableId
     )
+
+    // Get the card being dragged
+    const cardToMove = tempData[sourceBoardIdx].card[source.index]
+
+    // Modify the status of the card based on the destination board
+
+    console.log('Destination board : ' + destinationBoardIdx)
+    console.log('Source board : ' + sourceBoardIdx)
+    const response = await UpdateTaskStatus({
+      id: cardToMove.id,
+      boardId: destinationBoardIdx + 1,
+    })
+
+    if (response) {
+      cardToMove.status = response.status
+    } else {
+      console.log("Couldn't update card status")
+    }
+
     tempData[destinationBoardIdx].card.splice(
       destination.index,
       0,
@@ -62,7 +89,7 @@ const Project = () => {
   //   setData(tempData);
   // };
 
-  const addTask = async (title, bid) => {
+  const addTask = async ({title, bid}) => {
     const index = data.findIndex((item) => item.id === bid)
     const tempData = [...data]
 
@@ -84,13 +111,34 @@ const Project = () => {
     }
   }
 
-  const removeCard = (boardId, cardId) => {
+  const removeCard = async ({boardId, cardId}) => {
     const index = data.findIndex((item) => item.id === boardId)
     const tempData = [...data]
     const cardIndex = data[index].card.findIndex((item) => item.id === cardId)
-
     tempData[index].card.splice(cardIndex, 1)
-    setData(tempData)
+
+    //first we remove subtasks
+    const response1 = await RemoveAllTaskSubTasks({id: cardId})
+
+    if (response1) {
+      //if we remove all subtasks next we remove tags
+      const response2 = await RemoveAllTags({id: cardId})
+
+      if (response2) {
+        //if we remove all tags next we remove the task itself
+        const response3 = await RemoveTask({id: cardId})
+
+        if (response3) {
+          setData(tempData)
+        } else {
+          console.log('Failed to remove Task')
+        }
+      } else {
+        console.log('Failed to remove Subtasks')
+      }
+    } else {
+      console.log('Failed to remove Subtasks')
+    }
   }
 
   const removeBoard = (bid) => {
@@ -100,26 +148,27 @@ const Project = () => {
     setData(tempData)
   }
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const {source, destination} = result
     if (!destination) return
 
     if (source.droppableId === destination.droppableId) return
 
-    setData(dragCardInBoard(source, destination))
+    setData(await dragCardInBoard(source, destination))
   }
 
-  const updateCard = (bid, cid, card) => {
+  const updateCard = ({bid, taskId, task}) => {
+    //Add the fetch to update The task
     const index = data.findIndex((item) => item.id === bid)
     if (index < 0) return
 
     const tempBoards = [...data]
     const cards = tempBoards[index].card
 
-    const cardIndex = cards.findIndex((item) => item.id === cid)
+    const cardIndex = cards.findIndex((item) => item.id === taskId)
     if (cardIndex < 0) return
 
-    tempBoards[index].card[cardIndex] = card
+    tempBoards[index].card[cardIndex] = task
     console.log(tempBoards)
     setData(tempBoards)
   }
@@ -217,6 +266,8 @@ const Project = () => {
         <div className="app_outer">
           <div className="app_boards">
             {loadedData &&
+              data &&
+              data.length > 0 &&
               data.map((item) => (
                 <Board
                   key={item.id}
