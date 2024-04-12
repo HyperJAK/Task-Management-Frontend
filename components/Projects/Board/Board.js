@@ -92,7 +92,7 @@ const Board = (props) => {
           name={'Add Task'}
           btnName={'Add Card'}
           placeholder={'Enter Task Title'}
-          onSubmit={(value) => props.addCard(value, props.id)}
+          onSubmit={(value) => props.addCard({title: value, bid: props.id})}
         />
       </div>
     </div>

@@ -10,7 +10,7 @@ const Editable = (props) => {
     e.preventDefault()
     if (text && props.onSubmit) {
       setText('')
-      props.onSubmit({name: text})
+      props.onSubmit(text)
     }
     setShow(false)
   }

@@ -7,6 +7,7 @@ export async function AddTaskToProject({id, name}) {
       if (parsedProject.key !== '' || parsedProject.key !== null) {
         const projectId = parsedProject.key
 
+        console.log('The project id is : ' + projectId)
         const task = {
           name: name,
           status:
@@ -18,6 +19,9 @@ export async function AddTaskToProject({id, name}) {
                   ? 'Completed'
                   : '',
         }
+
+        console.log('Name is: ' + task.name)
+        console.log('Status is: ' + task.status)
 
         const response = await fetch(
           `http://localhost:5183/Projects/${projectId}/addtask`,
@@ -31,7 +35,7 @@ export async function AddTaskToProject({id, name}) {
         )
 
         try {
-          console.log('The response is: ' + response)
+          console.log('The response is: ' + response.id)
           const data = await response.json()
 
           //console.log("RESPONSESSSS")

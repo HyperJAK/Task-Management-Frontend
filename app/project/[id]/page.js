@@ -62,7 +62,7 @@ const Project = () => {
   //   setData(tempData);
   // };
 
-  const addTask = async (title, bid) => {
+  const addTask = async ({title, bid}) => {
     const index = data.findIndex((item) => item.id === bid)
     const tempData = [...data]
 
