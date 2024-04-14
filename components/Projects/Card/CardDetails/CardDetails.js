@@ -229,11 +229,13 @@ const CardDetails = (props) => {
                     <CheckSquare className="icon__md" />
                     <h6>Check List</h6>
                   </div>
-                  <div className="card__action__btn">
-                    <button onClick={() => deleteAllSubTasks({id: task.id})}>
-                      Delete all tasks
-                    </button>
-                  </div>
+                  {props.isCreator && (
+                    <div className="card__action__btn">
+                      <button onClick={() => deleteAllSubTasks({id: task.id})}>
+                        Delete all tasks
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div className="progress__bar mb-2 mt-2">
                   <div className="progress flex-1">
@@ -270,16 +272,18 @@ const CardDetails = (props) => {
                           }`}>
                           {item.name}
                         </h6>
-                        <Trash
-                          onClick={() => {
-                            removeSubTask({id: item.id})
-                          }}
-                          style={{
-                            cursor: 'pointer',
-                            widht: '18px',
-                            height: '18px',
-                          }}
-                        />
+                        {props.isCreator && (
+                          <Trash
+                            onClick={() => {
+                              removeSubTask({id: item.id})
+                            }}
+                            style={{
+                              cursor: 'pointer',
+                              widht: '18px',
+                              height: '18px',
+                            }}
+                          />
+                        )}
                       </div>
                     ))
                   ) : (
@@ -319,15 +323,17 @@ const CardDetails = (props) => {
                   Date
                 </button>
 
-                <button
-                  onClick={() =>
-                    props.removeCard({boardId: props.bid, cardId: task.id})
-                  }>
-                  <span className="icon__sm">
-                    <Trash />
-                  </span>
-                  Delete Card
-                </button>
+                {props.isCreator && (
+                  <button
+                    onClick={() =>
+                      props.removeCard({boardId: props.bid, cardId: task.id})
+                    }>
+                    <span className="icon__sm">
+                      <Trash />
+                    </span>
+                    Delete Card
+                  </button>
+                )}
               </div>
             </div>
           </div>

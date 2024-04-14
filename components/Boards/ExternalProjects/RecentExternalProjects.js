@@ -1,11 +1,6 @@
 'use client'
 import {useEffect, useState} from 'react'
-import {
-  getExternalProjects,
-  getProjects,
-  GetUserExternalProjects,
-  GetUserRecentProjects,
-} from '@/service/project'
+import {GetUserExternalProjects} from '@/service/project'
 import Link from 'next/link'
 
 const RecentExternalProjects = ({refreshProjects, setRefreshProjects}) => {
@@ -42,6 +37,7 @@ const RecentExternalProjects = ({refreshProjects, setRefreshProjects}) => {
   const handleClickedProject = (e, projectId) => {
     const key = e.target.key
     localStorage.setItem('clickedProjectId', JSON.stringify({key: projectId}))
+    localStorage.setItem('isCreator', JSON.stringify({value: false}))
   }
 
   return (
@@ -63,7 +59,7 @@ const RecentExternalProjects = ({refreshProjects, setRefreshProjects}) => {
             {recentExternalProjects.map((recentExternalProject) => (
               <Link
                 key={recentExternalProject.id}
-                href={`/project/externalProjects/${recentExternalProject.title}`}>
+                href={`/project/${recentExternalProject.title}`}>
                 <tr
                   key={recentExternalProject.id}
                   className="cursor-pointer hover:bg-gray-100"
