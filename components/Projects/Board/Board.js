@@ -80,6 +80,7 @@ const Board = (props) => {
                 updateCard={props.updateCard}
                 removeCard={props.removeCard}
                 card={items}
+                isCreator={props.isCreator}
               />
             ))}
             {provided.placeholder}
@@ -87,14 +88,16 @@ const Board = (props) => {
         )}
       </Droppable>
       {/*Add card logic*/}
-      <div className="board__footer">
-        <Editable
-          name={'Add Task'}
-          btnName={'Add Card'}
-          placeholder={'Enter Task Title'}
-          onSubmit={(value) => props.addCard({title: value, bid: props.id})}
-        />
-      </div>
+      {props.isCreator && (
+        <div className="board__footer">
+          <Editable
+            name={'Add Task'}
+            btnName={'Add Card'}
+            placeholder={'Enter Task Title'}
+            onSubmit={(value) => props.addCard({title: value, bid: props.id})}
+          />
+        </div>
+      )}
     </div>
   )
 }

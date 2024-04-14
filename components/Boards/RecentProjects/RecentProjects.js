@@ -26,6 +26,7 @@ const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
   const handleClickedProject = (e, projectId) => {
     const key = e.target.key
     localStorage.setItem('clickedProjectId', JSON.stringify({key: projectId}))
+    localStorage.setItem('isCreator', JSON.stringify({value: true}))
   }
 
   const isEmptyRecentProjects = () => {
@@ -56,7 +57,7 @@ const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
             {recentProjects.map((recentProject) => (
               <Link
                 key={recentProject.id}
-                href={`/project/recentProjects/${recentProject.title}`}>
+                href={`/project/${recentProject.title}`}>
                 <tr
                   key={recentProject.id}
                   className="cursor-pointer hover:bg-gray-100"

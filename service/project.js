@@ -139,8 +139,26 @@ export async function GetProjectTasks({id}) {
   }
 }
 
-export const getExternalProjects = () => {}
+export async function AddTeamateToProject({id, email}) {
+  try {
+    const response = await fetch(
+      `http://localhost:5183/Projects/${id}/adduser/${email}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
 
-export const getProject = (id) => {}
+    const data = await response.json()
 
-export const updateProject = (projectId, updatedProject) => {}
+    if (data) {
+      return data
+    }
+    return null
+  } catch (error) {
+    //alert(error.response.data.error);
+    console.log(error)
+  }
+}

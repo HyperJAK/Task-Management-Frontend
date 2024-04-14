@@ -25,6 +25,7 @@ const Card = (props) => {
               card={props.card}
               bid={props.bid}
               removeCard={props.removeCard}
+              isCreator={props.isCreator}
             />
           )}
           <div

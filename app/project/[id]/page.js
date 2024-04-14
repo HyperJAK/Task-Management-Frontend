@@ -1,13 +1,13 @@
 'use client'
 import {useEffect, useState} from 'react'
-import '../../../App.css'
+import '../../App.css'
 
-import Board from '../../../../components/Projects/Board/Board'
+import Board from '../../../components/Projects/Board/Board'
 // import data from '../data'
 import {DragDropContext} from 'react-beautiful-dnd'
 
 import useLocalStorage from 'use-local-storage'
-import '../../../Bootstrap.css'
+import '../../Bootstrap.css'
 
 import {
   AddTaskToProject,
@@ -18,10 +18,17 @@ import {
   RemoveTask,
   UpdateTaskStatus,
 } from '@/service/task'
-import {GetProjectTasks} from '@/service/project'
+import {
+  AddTeamateToProject,
+  GetProjectTasks,
+  GetUserRecentProjects,
+} from '@/service/project'
 const Project = () => {
   const [data, setData] = useState([])
   const [loadedData, setLoadedData] = useState(false)
+  const [teamateEmail, setTeamateEmail] = useState('')
+  const [isCreator, setIsCreator] = useState(true)
+  const [currentProjectId, setCurrentProjectId] = useState('')
 
   const defaultDark = window.matchMedia('(prefers-colors-scheme: dark)').matches
   const [theme, setTheme] = useLocalStorage(
@@ -182,6 +189,8 @@ const Project = () => {
         if (parsedProject.key !== '' || parsedProject.key !== null) {
           const projectId = parsedProject.key
 
+          setCurrentProjectId(projectId)
+
           const response = await GetProjectTasks({id: projectId})
 
           if (response) {
@@ -248,6 +257,17 @@ const Project = () => {
           }
         }
       }
+
+      //Added this to check if the user is the creator or not of the project
+      const creator = localStorage.getItem('isCreator')
+      if (creator) {
+        const parsedCreator = await JSON.parse(creator)
+
+        if (parsedCreator.value !== null) {
+          setIsCreator(parsedCreator.value)
+          console.log('SHould have changed')
+        }
+      }
     }
 
     if (data.length === 0) {
@@ -257,8 +277,51 @@ const Project = () => {
     localStorage.setItem('kanban-project', JSON.stringify(data))
   }, [data])
 
+  const handleAddTeamate = async () => {
+    if (teamateEmail.length === 0) {
+      alert('Please enter a Teamate Email')
+    } else {
+      const response = await AddTeamateToProject({
+        id: currentProjectId,
+        email: teamateEmail,
+      })
+
+      if (response) {
+        alert('Added successfully')
+        setTeamateEmail('')
+      } else {
+        alert('Couldnt add him')
+      }
+    }
+  }
+
+  const handleTeamateChange = (e) => {
+    setTeamateEmail(e.target.value)
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
+      {isCreator && (
+        <div
+          className={
+            'flex w-full flex-row items-center justify-center gap-10 bg-black align-middle'
+          }>
+          <input
+            type={'text'}
+            value={teamateEmail}
+            onChange={handleTeamateChange}
+            className={'m-2 h-12 rounded-2xl pl-2'}
+          />
+          <div
+            className={
+              'flex h-5 flex-col justify-center rounded-2xl border border-2 bg-secondary p-5 text-center text-white hover:cursor-pointer hover:bg-transparent'
+            }
+            onClick={handleAddTeamate}>
+            Add Teamate
+          </div>
+        </div>
+      )}
+
       <div
         className="App"
         data-theme={theme}>
@@ -279,6 +342,7 @@ const Project = () => {
                   removeCard={removeCard}
                   removeBoard={removeBoard}
                   updateCard={updateCard}
+                  isCreator={isCreator}
                 />
               ))}
             {/*The add board component that we use to add columns (should be removed and by default 3 columns are present)*/}
