@@ -51,6 +51,7 @@ const Label = (props) => {
                 onChange={(e) => {
                   setLabel(e.target.value)
                 }}
+                className={'text-opposite'}
               />
             </div>
             <p

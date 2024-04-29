@@ -31,7 +31,7 @@ const CreateProjectComponent = ({setRefreshProjects}) => {
         onSubmit={handleSubmit}
         className="w-full max-w-sm">
         {/*Title*/}
-        <p className={'pb-5 text-center'}>Create Project</p>
+        <h2 className="mb-4 text-2xl font-bold">Create Project</h2>
 
         {/*Name of project*/}
         <div className="mb-6 flex flex-col md:items-center">
