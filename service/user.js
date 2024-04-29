@@ -29,6 +29,7 @@ export async function SignUpFunc({email, password, username}) {
     if (data) {
       const userForStorage = {
         userId: data.id,
+        email: data.email,
       }
 
       localStorage.setItem('user', JSON.stringify(userForStorage))
@@ -64,6 +65,7 @@ export async function SignInFunc({email, password}) {
     if (data) {
       const userForStorage = {
         userId: data.id,
+        email: data.email,
       }
 
       localStorage.setItem('user', JSON.stringify(userForStorage))
