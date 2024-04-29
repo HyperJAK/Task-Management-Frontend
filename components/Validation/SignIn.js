@@ -15,7 +15,7 @@ const rubikBold = Rubik({
   weight: ['700'],
 })
 
-const SignIn = ({setShowSignIn}) => {
+const SignIn = ({setShowSignIn, setAuthed}) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isHovered, setIsHovered] = useState(false)
@@ -40,10 +40,11 @@ const SignIn = ({setShowSignIn}) => {
         try {
           // Assuming setUser and setCurrentScreen are defined elsewhere
           const response = await SignInFunc({email, password: hashedPass})
-          console.log('Signup successful!') // Log success for debugging
+          console.log('Signin successful!') // Log success for debugging
 
           if (response) {
-            setShowSignIn(true)
+            setShowSignIn(false)
+            setAuthed(true)
           }
         } catch (error) {
           // Handle specific errors (if possible)

@@ -34,7 +34,7 @@ export default function Home() {
       } catch (e) {}
     }
     fetchData()
-  }, [setAuthed])
+  }, [setAuthed, setShowSignIn, userInfo === ''])
 
   const handleLogout = (e) => {
     setAuthed(false)
@@ -101,8 +101,18 @@ export default function Home() {
           </>
         )}
 
-        {!authed && showSignIn && <SignIn setShowSignIn={setShowSignIn} />}
-        {!authed && !showSignIn && <SignUp setShowSignIn={setShowSignIn} />}
+        {!authed && showSignIn && (
+          <SignIn
+            setShowSignIn={setShowSignIn}
+            setAuthed={setAuthed}
+          />
+        )}
+        {!authed && !showSignIn && (
+          <SignUp
+            setShowSignIn={setShowSignIn}
+            setAuthed={setAuthed}
+          />
+        )}
       </div>
     </main>
   )
