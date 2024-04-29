@@ -229,7 +229,8 @@ const CardDetails = (props) => {
                     <CheckSquare className="icon__md" />
                     <h6>Check List</h6>
                   </div>
-                  {props.isCreator && (
+                  {(props.isCreator ||
+                    props.selectedRole === 'project-manager') && (
                     <div className="card__action__btn">
                       <button onClick={() => deleteAllSubTasks({id: task.id})}>
                         Delete all tasks
@@ -272,7 +273,8 @@ const CardDetails = (props) => {
                           }`}>
                           {item.name}
                         </h6>
-                        {props.isCreator && (
+                        {(props.isCreator ||
+                          props.selectedRole === 'project-manager') && (
                           <Trash
                             onClick={() => {
                               removeSubTask({id: item.id})
@@ -323,7 +325,8 @@ const CardDetails = (props) => {
                   Date
                 </button>
 
-                {props.isCreator && (
+                {(props.isCreator ||
+                  props.selectedRole === 'project-manager') && (
                   <button
                     onClick={() =>
                       props.removeCard({boardId: props.bid, cardId: task.id})

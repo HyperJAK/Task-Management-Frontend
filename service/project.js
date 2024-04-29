@@ -139,10 +139,33 @@ export async function GetProjectTasks({id}) {
   }
 }
 
-export async function AddTeamateToProject({id, email}) {
+export async function GetUserRoleInProject({id, userId}) {
   try {
     const response = await fetch(
-      `http://localhost:5183/Projects/${id}/adduser/${email}`,
+      `http://localhost:5183/Projects/${id}/getUserRole/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      return data.role
+    }
+  } catch (error) {
+    alert(error)
+    console.log(error)
+  }
+}
+
+export async function AddTeamateToProject({id, email, role}) {
+  try {
+    const response = await fetch(
+      `http://localhost:5183/Projects/${id}/adduser/${email}/${role}`,
       {
         method: 'POST',
         headers: {
