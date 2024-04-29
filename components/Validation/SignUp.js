@@ -21,7 +21,7 @@ const rubikBold = Rubik({
   weight: ['700'],
 })
 
-const SignUp = ({setShowSignIn}) => {
+const SignUp = ({setShowSignIn, setAuthed}) => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -31,10 +31,6 @@ const SignUp = ({setShowSignIn}) => {
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword)
-  }
-
-  const handleRefresh = () => {
-    setShowSignIn(false)
   }
 
   const handleSignup = async (e) => {
@@ -61,8 +57,12 @@ const SignUp = ({setShowSignIn}) => {
             password: hashedPass,
             username,
           })
-          console.log('Signup successful!') // Log success for debugging
-          handleRefresh()
+
+          if (response) {
+            console.log('Signup successful!') // Log success for debugging
+            setShowSignIn(false)
+            setAuthed(true)
+          }
         } catch (error) {
           // Handle specific errors (if possible)
           if (
