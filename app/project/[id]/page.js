@@ -22,13 +22,15 @@ import {
   AddTeamateToProject,
   GetProjectTasks,
   GetUserRecentProjects,
+  GetUserRoleInProject,
 } from '@/service/project'
 const Project = () => {
   const [data, setData] = useState([])
   const [loadedData, setLoadedData] = useState(false)
   const [teamateEmail, setTeamateEmail] = useState('')
-  const [isCreator, setIsCreator] = useState(true)
+  const [isCreator, setIsCreator] = useState(false)
   const [currentProjectId, setCurrentProjectId] = useState('')
+  const [selectedRole, setSelectedRole] = useState('guest')
 
   const defaultDark = window.matchMedia('(prefers-colors-scheme: dark)').matches
   const [theme, setTheme] = useLocalStorage(
@@ -183,12 +185,14 @@ const Project = () => {
   useEffect(() => {
     async function fetchData() {
       const storedProject = localStorage.getItem('clickedProjectId')
+      const parsedProject = JSON.parse(storedProject)
+      const storedUser = localStorage.getItem('user')
+      const parsedUser = JSON.parse(storedUser)
+
+      const projectId = parsedProject.key
 
       if (storedProject) {
-        const parsedProject = JSON.parse(storedProject)
         if (parsedProject.key !== '' || parsedProject.key !== null) {
-          const projectId = parsedProject.key
-
           setCurrentProjectId(projectId)
 
           const response = await GetProjectTasks({id: projectId})
@@ -267,6 +271,17 @@ const Project = () => {
           setIsCreator(parsedCreator.value)
           console.log('SHould have changed')
         }
+
+        //getting info about role of user
+        const roleResponse = await GetUserRoleInProject({
+          id: projectId,
+          userId: parsedUser.userId,
+        })
+
+        if (roleResponse && !isCreator) {
+          setSelectedRole(roleResponse)
+          console.log('The role of this user is:' + roleResponse)
+        }
       }
     }
 
@@ -284,6 +299,7 @@ const Project = () => {
       const response = await AddTeamateToProject({
         id: currentProjectId,
         email: teamateEmail,
+        role: selectedRole,
       })
 
       if (response) {
@@ -299,6 +315,10 @@ const Project = () => {
     setTeamateEmail(e.target.value)
   }
 
+  const handleRoleChange = (e) => {
+    setSelectedRole(e.target.value)
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {isCreator && (
@@ -310,8 +330,23 @@ const Project = () => {
             type={'text'}
             value={teamateEmail}
             onChange={handleTeamateChange}
+            placeholder={'Email here'}
             className={'m-2 h-12 rounded-2xl pl-2'}
           />
+          <div
+            className={
+              'flex h-5 flex-col justify-center rounded-2xl border border-2 bg-secondary text-center text-white hover:cursor-pointer hover:bg-transparent'
+            }>
+            <select
+              value={selectedRole}
+              onChange={handleRoleChange}
+              className={'rounded-2xl bg-gray-200 p-2 text-opposite'}>
+              <option value="guest">Guest</option>
+              <option value="project-manager">Project Manager</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
           <div
             className={
               'flex h-5 flex-col justify-center rounded-2xl border border-2 bg-secondary p-5 text-center text-white hover:cursor-pointer hover:bg-transparent'
@@ -343,6 +378,7 @@ const Project = () => {
                   removeBoard={removeBoard}
                   updateCard={updateCard}
                   isCreator={isCreator}
+                  selectedRole={selectedRole}
                 />
               ))}
             {/*The add board component that we use to add columns (should be removed and by default 3 columns are present)*/}

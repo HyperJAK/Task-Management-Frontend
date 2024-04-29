@@ -46,29 +46,25 @@ const RecentProjects = ({refreshProjects, setRefreshProjects}) => {
         <p className="text-gray-500">No recent Projects found</p>
       )}
       {recentProjects && recentProjects.length > 0 && (
-        <table className="w-full table-auto">
+        <table className="flex w-full flex-col">
           <thead>
-            <tr>
+            <tr className={'flex flex-row justify-evenly'}>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Description</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={'flex w-full flex-col'}>
             {recentProjects.map((recentProject) => (
               <Link
                 key={recentProject.id}
-                href={`/project/${recentProject.title}`}>
+                href={`/project/${recentProject.title}`}
+                className={'w-full'}>
                 <tr
                   key={recentProject.id}
-                  className="cursor-pointer hover:bg-gray-100"
+                  className="flex w-full cursor-pointer flex-row justify-evenly border-b border-gray-200 hover:bg-gray-100"
                   onClick={(e) => handleClickedProject(e, recentProject.id)}>
-                  <td className="border-b border-gray-200 px-4 py-2">
-                    {recentProject.title}
-                  </td>
-                  <td className="border-b border-gray-200 px-4 py-2">
-                    {recentProject.description}
-                  </td>
-                  <td className="border-b border-gray-200 px-4 py-2"></td>
+                  <td className="px-4 py-2">{recentProject.title}</td>
+                  <td className="px-4 py-2">{recentProject.description}</td>
                 </tr>
               </Link>
             ))}

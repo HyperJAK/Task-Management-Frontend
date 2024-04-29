@@ -26,6 +26,7 @@ const Card = (props) => {
               bid={props.bid}
               removeCard={props.removeCard}
               isCreator={props.isCreator}
+              selectedRole={props.selectedRole}
             />
           )}
           <div

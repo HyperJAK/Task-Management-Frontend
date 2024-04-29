@@ -47,32 +47,29 @@ const RecentExternalProjects = ({refreshProjects, setRefreshProjects}) => {
         <p className="text-gray-500">No recent External Projects found</p>
       )}
       {recentExternalProjects && recentExternalProjects.length > 0 && (
-        <table className="w-full table-auto">
+        <table className="flex w-full flex-col">
           <thead>
-            <tr>
+            <tr className={'flex w-full flex-row justify-evenly'}>
               <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Created By</th>
-              <th className="px-4 py-2 text-left"></th>
+              <th className="px-4 py-2 text-left">Description</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className={'flex flex-col justify-evenly'}>
             {recentExternalProjects.map((recentExternalProject) => (
               <Link
                 key={recentExternalProject.id}
-                href={`/project/${recentExternalProject.title}`}>
+                href={`/project/${recentExternalProject.title}`}
+                className={'w-full'}>
                 <tr
                   key={recentExternalProject.id}
-                  className="cursor-pointer hover:bg-gray-100"
+                  className="flex cursor-pointer flex-row justify-evenly border-b border-gray-200 hover:bg-gray-100"
                   onClick={(e) =>
                     handleClickedProject(e, recentExternalProject.id)
                   }>
-                  <td className="border-b border-gray-200 px-4 py-2">
-                    {recentExternalProject.title}
-                  </td>
-                  <td className="border-b border-gray-200 px-4 py-2">
+                  <td className="px-4 py-2">{recentExternalProject.title}</td>
+                  <td className="px-4 py-2">
                     {recentExternalProject.description}
                   </td>
-                  <td className="border-b border-gray-200 px-4 py-2"></td>
                 </tr>
               </Link>
             ))}
