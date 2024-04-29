@@ -81,6 +81,7 @@ const Board = (props) => {
                 removeCard={props.removeCard}
                 card={items}
                 isCreator={props.isCreator}
+                selectedRole={props.selectedRole}
               />
             ))}
             {provided.placeholder}
@@ -88,7 +89,7 @@ const Board = (props) => {
         )}
       </Droppable>
       {/*Add card logic*/}
-      {props.isCreator && (
+      {(props.isCreator || props.selectedRole === 'admin') && (
         <div className="board__footer">
           <Editable
             name={'Add Task'}

@@ -14,6 +14,7 @@ export default function Home() {
   const [showSignIn, setShowSignIn] = useState(true)
   const [authed, setAuthed] = useState(false)
   const [refreshProjects, setRefreshProjects] = useState(false)
+  const [userInfo, setUserInfo] = useState('')
 
   useEffect(() => {
     function fetchData() {
@@ -23,6 +24,7 @@ export default function Home() {
           const parsedUser = JSON.parse(storedUser)
           if (parsedUser.userId !== '' || parsedUser.userId !== null) {
             setAuthed(true)
+            setUserInfo(parsedUser.email)
           } else {
             setAuthed(false)
           }
@@ -42,9 +44,27 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center gap-[150px] p-10">
       <div className={'flex w-full flex-col gap-40'}>
-        {authed && (
+        {authed && userInfo && (
           <>
-            <div className={'flex w-full flex-row justify-end p-10'}>
+            <div className={'flex w-full flex-row justify-between p-10'}>
+              <Button
+                style={
+                  'bg-accent/50 p-10 pr-20 hover:bg-secondary hover:cursor-pointer flex-row flex gap-2 rounded-2xl'
+                }
+                itemComponents={
+                  <>
+                    <p>Welcome, {userInfo}</p>{' '}
+                    <Image
+                      src={'/icons/person.png'}
+                      alt={'person image'}
+                      width={20}
+                      height={20}
+                    />
+                  </>
+                }
+                handle={''}
+              />
+
               <Button
                 style={
                   'bg-accent/50 p-10 pr-20 hover:bg-secondary hover:cursor-pointer flex-row flex gap-2 rounded-2xl'
